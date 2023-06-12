@@ -1,0 +1,56 @@
+# misconfigurations.yaml
+
+# Misconfigured AWS S3 bucket
+resources:
+  - Type: AWS::S3::Bucket
+    Properties:
+      BucketName: my-bucket
+      AccessControl: PublicRead
+
+# Misconfigured Azure Storage Account
+resources:
+  - Type: Microsoft.Storage/storageAccounts
+    Properties:
+      AccountName: my-storage-account
+      AccountType: Standard_LRS
+      AccessTier: Hot
+      NetworkAcls:
+        Bypass: AzureServices
+        DefaultAction: Allow
+        IpRules:
+          - IPAddressOrRange: 0.0.0.0/0
+            Action: Allow
+
+# Misconfigured AWS EC2 instance
+resources:
+  - Type: AWS::EC2::Instance
+    Properties:
+      ImageId: ami-12345678
+      InstanceType: t2.micro
+      SecurityGroupIds:
+        - sg-12345678
+      KeyName: my-key-pair
+      UserData: |
+        #!/bin/bash
+        echo "I am a misconfigured EC2 instance"
+
+# Misconfigured Azure virtual machine
+resources:
+  - Type: Microsoft.Compute/virtualMachines
+    Properties:
+      HardwareProfile:
+        VmSize: Standard_B1s
+      OsProfile:
+        AdminUsername: myusername
+        AdminPassword: insecurepassword
+      StorageProfile:
+        OsDisk:
+          Name: myosdisk
+          Caching: None
+          CreateOption: FromImage
+          OsType: Linux
+          ManagedDisk:
+            StorageAccountType: Standard_LRS
+      NetworkProfile:
+        NetworkInterfaces:
+          - Id: /subscriptions/12345678-1234-1234-1234-1234567890ab/resourceGroups/myresourcegroup/providers/Microsoft.Network/networkInterfaces/mynetworkinterface
